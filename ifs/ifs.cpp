@@ -57,14 +57,64 @@ TEST_CASE("if with mutex")
     {
         std::string msg;
 
-        if (std::lock_guard lk{mtx_q_msg}; !std::empty(q_msg))
+        if (std::lock_guard lk {mtx_q_msg}; !std::empty(q_msg))
         {
             msg = q_msg.front();
             q_msg.pop();
-        } 
+        }
         else
         {
             q_msg.push("Was empty");
-        }         
+        }
     }
+}
+
+///////////////////////////////////////////////////////////////
+// constexpr if
+
+namespace BeforeCpp17
+{
+    template <typename T>
+    auto is_power_of_2(T value) -> std::enable_if_t<std::is_integral<T>::value, bool>
+    {
+        return value > 0 && (value & (value - 1)) == 0;
+    }
+
+    template <typename T>
+    auto is_power_of_2(T value) -> std::enable_if_t<std::is_floating_point<T>::value, bool>
+    {
+        int exponent;
+        const T mantissa = std::frexp(value, &exponent);
+        return mantissa == static_cast<T>(0.5);
+    }
+}
+
+namespace Cpp17
+{
+    template <typename T>
+    bool is_power_of_2(T value)
+    {
+        if constexpr (std::is_integral<T>::value)
+        {
+            return value > 0 && (value & (value - 1)) == 0;
+        }
+        else
+        {
+            int exponent;
+            const T mantissa = std::frexp(value, &exponent);
+            return mantissa == static_cast<T>(0.5);
+        }
+    }
+}
+
+TEST_CASE("constexpr if")
+{
+    using namespace Cpp17;
+
+    uint8_t value = 8;
+    REQUIRE(is_power_of_2(value) == true);
+    REQUIRE(is_power_of_2(16) == true);
+    REQUIRE(is_power_of_2(31) == false);
+
+    REQUIRE(is_power_of_2(8.0) == true);
 }
