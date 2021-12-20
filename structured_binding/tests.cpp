@@ -224,7 +224,7 @@ enum Something
     thing
 };
 
-const std::map<Something, std::string> 0000000000000000000000000000000000000000000000000000000000000000000 = { { some, "some"}, {thing, "thing" } };
+const std::map<Something, std::string> something_desc = { { some, "some"}, {thing, "thing" } };
 
 ////////////////////////////////////
 // tuple-like protocol for Something
