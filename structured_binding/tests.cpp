@@ -252,19 +252,29 @@ struct std::tuple_element<1, Something>
 
 // step 3 - get<Index>
 template <size_t Index>
-decltype(auto) get(Something sth);
-
-template <>
-decltype(auto) get<0>(Something sth)
+decltype(auto) get(Something sth)
 {
-    return static_cast<int>(sth);
+    if constexpr(Index == 0)
+    {
+        return static_cast<int>(sth);
+    }
+    else
+    {
+        return something_desc.at(sth);
+    }
 }
 
-template <>
-decltype(auto) get<1>(Something sth)
-{
-    return something_desc.at(sth);
-}
+// template <>
+// decltype(auto) get<0>(Something sth)
+// {
+//     return static_cast<int>(sth);
+// }
+
+// template <>
+// decltype(auto) get<1>(Something sth)
+// {
+//     return something_desc.at(sth);
+// }
 
 TEST_CASE("tuple-like protocol")
 {

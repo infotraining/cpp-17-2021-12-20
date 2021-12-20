@@ -118,3 +118,45 @@ TEST_CASE("constexpr if")
 
     REQUIRE(is_power_of_2(8.0) == true);
 }
+
+namespace BeforeCpp17
+{
+    void print()
+    {
+        std::cout << "\n";
+    }
+
+    template <typename Head, typename... Tail>
+    void print(const Head& head, const Tail&... tail)
+    {
+        std::cout << head << " ";
+        print(tail...);
+    }
+}
+
+namespace Cpp17
+{
+    template <typename Head, typename... Tail>
+    void print(const Head& head, const Tail&... tail)
+    {
+        std::cout << head << " ";
+        
+        if constexpr(sizeof...(tail) > 0)
+        {
+            print(tail...);
+        }
+        else
+        {
+            std::cout << "\n";
+        }
+    }
+}
+
+TEST_CASE("variadic templates")
+{
+    Cpp17::print(1, 2.71, "text"s);
+    // print(head = int, tail = (double, string))
+    //       => print(head = double, tail = (string))
+    //                => print(head = string, tuple = ())
+    //                         print()
+}
