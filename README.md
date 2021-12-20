@@ -3,7 +3,6 @@
 ## Dokumentacja + slajdy
 
 * https://infotraining.bitbucket.io/cpp-17
-* https://gitpitch.com/infotraining-dev/cpp-17/develop?grs=bitbucket&p=slides_pl#/
 
 ## Konfiguracja lokalna - toolchain
 
