@@ -1,7 +1,7 @@
+cmake_minimum_required(VERSION 3.2)
 get_filename_component(PROJECT_NAME_STR ${CMAKE_SOURCE_DIR} NAME)
 string(REPLACE " " "_" ProjectId ${PROJECT_NAME_STR})
 
-cmake_minimum_required(VERSION 2.8)
 project(${PROJECT_NAME_STR})
 
 #----------------------------------------
