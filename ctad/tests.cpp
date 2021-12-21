@@ -1,6 +1,6 @@
 #include <algorithm>
-#include <numeric>
 #include <iostream>
+#include <numeric>
 #include <string>
 #include <vector>
 
@@ -8,7 +8,7 @@
 
 using namespace std;
 
-void foo(int) {}
+void foo(int) { }
 
 template <typename T>
 void deduce1(T arg)
@@ -81,10 +81,72 @@ TEST_CASE("Template Argument Deduction - case 3")
 
     auto&& a2 = std::string("text"); // std::string&&
     deduce3(std::string("text"));
-}`
+}
 
 TEST_CASE("auto - special case")
 {
     auto il = {1, 2, 3}; // std::initializer_list
-    //deduce1({1, 2, 3}); // ERROR
+    // deduce1({1, 2, 3}); // ERROR
+}
+
+template <typename T1, typename T2>
+struct ValuePair
+{
+    T1 fst;
+    T2 snd;
+
+    ValuePair(const T1& f, const T2& s)
+        : fst {f}
+        , snd {s}
+    {        
+    }
+};
+
+// deduction guide
+template <typename T1, typename T2>
+ValuePair(T1, T2) -> ValuePair<T1, T2>;
+
+ValuePair(const char*, const char*) -> ValuePair<std::string, std::string>;
+
+template <typename T1, typename T2>
+ValuePair<T1, T2> make_value_pair(T1 f, T2 s)
+{
+    return ValuePair<T1, T2> {f, s};
+}
+
+////////////////////
+// CTAD + aggregates
+
+template <typename T>
+struct Data
+{
+    T value;
+};
+
+template <typename T>
+Data(T) -> Data<T>;
+
+
+TEST_CASE("CTAD")
+{
+    ValuePair<int, double> vp1 {1, 3.14};
+    auto vp2 = make_value_pair<long>(1, 3.14);
+
+    ValuePair vp3 {1, 3.14};
+    ValuePair vp4(100l, 3.14f);
+
+    const std::string text = "text"s;
+    ValuePair vp5 {"text", text};
+
+    ValuePair vp6{"abc", "def"};
+
+    SECTION("special case - copy syntax")
+    {
+        std::vector vec = {1, 2, 3, 4}; // CTAD - vector<int>
+        std::vector other {vec}; // CTAD - vector<int> - special case (copy syntax)
+        std::vector another {vec, vec}; // CTAD - vector<vector<int>>
+    }
+
+    Data d1{665}; // Data<int>
+    Data d2{"text"}; // Data<const char*>
 }
