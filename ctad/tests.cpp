@@ -149,4 +149,5 @@ TEST_CASE("CTAD")
 
     Data d1{665}; // Data<int>
     Data d2{"text"}; // Data<const char*>
+    Data d3{"text"s}; // Data<std::string>
 }
