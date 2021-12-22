@@ -49,7 +49,7 @@ if(MSVC)
 else()
 	find_package(TBB CONFIG REQUIRED)
 	find_package(Threads REQUIRED)
-	target_link_libraries(${PROJECT_NAME} PRIVATE TBB::tbb Threads::Threads stdc++fs)
+	target_link_libraries(${PROJECT_NAME} PRIVATE TBB::tbb Threads::Threads)
 endif() 
 
 #----------------------------------------
