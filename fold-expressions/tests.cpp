@@ -1,6 +1,6 @@
 #include <algorithm>
-#include <numeric>
 #include <iostream>
+#include <numeric>
 #include <string>
 #include <vector>
 
@@ -18,7 +18,8 @@ namespace Cpp98
         std::cout << "sum: " << sum << "\n";
 
         auto result = std::accumulate(std::begin(vec), std::end(vec), "0"s,
-            [](const std::string& reduced, int item) {
+            [](const std::string& reduced, int item)
+            {
                 return "("s + reduced + " + "s + std::to_string(item) + ")"s;
             });
 
@@ -49,21 +50,21 @@ namespace BeforeCpp17
 template <typename... TArgs>
 auto sum(const TArgs&... args) // sum(1, 2, 3, 4)
 {
-    return (... + args); // left-fold expression: return (((1 + 2) + 3) + 4);    
+    return (... + args); // left-fold expression: return (((1 + 2) + 3) + 4);
 }
-
 
 template <typename... TArgs>
 auto sum_r(const TArgs&... args) // sum(1, 2, 3, 4)
 {
-    return (args + ...); // right-fold expression: return (1 + (2 + (3 + 4)));    
+    return (args + ...); // right-fold expression: return (1 + (2 + (3 + 4)));
 }
 
 template <typename... TArgs>
 void print(const TArgs&... args) // print(1, 3.14, "text")
 {
-    auto with_space = [is_first = true](const auto& item) mutable {
-        if (!is_first) 
+    auto with_space = [is_first = true](const auto& item) mutable
+    {
+        if (!is_first)
             std::cout << " ";
         is_first = false;
         return item;
@@ -81,7 +82,7 @@ void print_lines(const TArgs&... args)
 template <typename... TArgs>
 auto do_sth(const TArgs&... args)
 {
-    return (... , args);
+    return (..., args);
 }
 
 TEST_CASE("comma operator in fold")
@@ -117,7 +118,6 @@ TEST_CASE("fold + variadic templates")
     REQUIRE(all_true() == true);
 }
 
-
 /////////////////////////////////
 // invoke + call_foreach
 
@@ -138,18 +138,19 @@ decltype(auto) call_foreach(F&& f, TArgs&&... args)
     return (..., invoke(f, std::forward<TArgs>(args)));
 }
 
-template <typename F, typename... TArgs>
-decltype(auto) poly(F x, TArgs&&... args)
+template <typename T, typename... Args>
+auto poly(T x, Args&&... args)
 {
-    F xx = 1;
-    return (... + (xx*=x, x * args));
+    T xx = 0;
+    return (... + ((xx == 0 ? xx = 1 : xx *= x) * args));
 }
 
 TEST_CASE("invoke + call_foreach")
 {
     REQUIRE(invoke(my_add, 1, 4) == 5);
 
-    auto printer = [](const auto&  item) { std::cout << item << "\n"; };
-    
+    auto printer = [](const auto& item)
+    { std::cout << item << "\n"; };
+
     call_foreach(printer, 1, 4, "text", 3.14);
-} 
+}
