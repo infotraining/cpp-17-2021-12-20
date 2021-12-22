@@ -55,7 +55,7 @@ TEST_CASE("accumulate")
 
     BENCHMARK("std::transform_reduce - parallel unsequenced")
     {
-        return std::transform_reduce(std::execution::par, words.begin(), words.end(), 0ULL, std::plus{}, calc_hash);
+        return std::transform_reduce(std::execution::par_unseq, words.begin(), words.end(), 0ULL, std::plus{}, calc_hash);
     };
 }
 
@@ -184,7 +184,7 @@ TEST_CASE("partition")
         });
     };
 
-    BENCHMARK_ADVANCED("parallel unsequencedszkol")
+    BENCHMARK_ADVANCED("parallel unsequenced")
     (Catch::Benchmark::Chronometer meter)
     {
         auto numbers_to_part = numbers;
